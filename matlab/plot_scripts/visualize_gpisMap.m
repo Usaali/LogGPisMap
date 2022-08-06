@@ -1,4 +1,3 @@
-%
 % GPisMap - Online Continuous Mapping using Gaussian Process Implicit Surfaces
 % https://github.com/leebhoram/GPisMap
 %
@@ -18,77 +17,129 @@
 %
 
 disp('drawing...');
-% Note: Displaying plots sometimes causes an (uknown) error.
-%       If you want to save the whole sequence,
-%       then start Matlab with the '-nodisplay' option 
-%       and add codes that save the images in a folder.
 
-gp_bias = 0.2;
-sensor_offset = [0.08;0];
-head = 0.5*[0.25 0 -0.25 0.25; 0 1 0 0 ];
-
+gp_bias = 0;
+w = 10;
+sensor_offset = [0.08; 0];
 res = mexGPisMap('test',xtest);
-arr = [0 1; -1 0]*Rot*head+tr;
+
+% new mean
+res(1,:) = -(1/w)*log(res(1,:));
 fval = res(1,:) + gp_bias;
-va = reshape(res(4,:),size(xg));
-% res(1,:) : fval
-% res(1:2,:) : grad
-% res(4,:) : var
 
-figure(1), hold off;
-gcf_position = get(gcf,'Position');
-gcf_position(3:4) = [(xmax-xmin)*20+10 (ymax-ymin)*20+10];
-set(gcf,'Color','w','Position',gcf_position);
-ax1 = gca;  hold off;
+% two surfaces extraction
+[~,temp] = isocontour(reshape(fval,size(xg)),0.1);
 
-% sdf
-h = pcolor(xg,yg,reshape(fval,size(xg)));  hold on;
-set(h,'EdgeColor','none'); axis equal;
-set(ax1,'CLim',[-0.4 0.4]);
-axis([xmin xmax ymin ymax])
+% plot two surfaces with normals
+tx = ((xmax-xmin)*(temp(:,2)-0.5)/size(xg,2)) + xmin;
+ty = ((ymax-ymin)*(temp(:,1)-0.5)/size(yg,1)) + ymin;
+tepp = single([tx, ty])';
+teppRes = mexGPisMap('test',tepp);
+loc = tepp'; % Location
 
-% surface extraction
-[~,temp] = isocontour(reshape(fval,size(xg)),0);
-Ind = (round(temp(:,2))-1)*size(xg,1) + round(temp(:,1));
-valid= find(Ind>0 & Ind<=prod(size(xg)));
-valid2 = find(va(Ind(valid)) < 0.4);
-Ind = valid(valid2);
-tx_draw = ((xmax-xmin)*(temp(Ind,2)-0.5)/size(xg,2)) + xmin;
-ty_draw = ((ymax-ymin)*(temp(Ind,1)-0.5)/size(yg,1)) + ymin;
-plot(tx_draw,ty_draw,'r.','MarkerSize',5);
+% normalised the normals
+movingNorm1 = teppRes(2,:)';
+movingNorm2 = teppRes(3,:)';
+nx = -[movingNorm1,movingNorm2];
+nx = nx ./ sqrt(sum(nx.^2, 2));
 
-% variance
-ax2 = axes; hold off;
-h = pcolor(ax2,xg,yg,ones(size(va))); hold on;
-set(h,'EdgeColor','none');
-alpha(ax2,va);
-linkaxes([ax1,ax2])
-ax2.Visible = 'off';
-ax2.XTick = [];
-ax2.YTick = [];
-axis(ax2,'equal');
-colormap(ax1,parula)
-colormap(ax2,[1 1 1])
-set([ax1 ax2],'Units','pixels');
-set([ax1,ax2],'Position',[5 5 (xmax-xmin)*20 (ymax-ymin)*20]);
-set([ax1,ax2],'XLim',[xmin xmax]);
-set([ax1,ax2],'YLim',[ymin ymax]);
-set([ax1,ax2],'XTick',{});
-set([ax1,ax2],'YTick',{});
-drawnow;
+% check the double surfaces
+% figure;
+% quiver(loc(:,1), loc(:,2), nx(:,1), nx(:,2)); hold on;
+% axis([xmin xmax ymin ymax])
+% axis equal;
 
-% measurement
-valid = find((ranges(nframe,:)'<3e1) & (ranges(nframe,:)'>2e-1) & (~isinf(ranges(nframe,:)')));
-XY = polar2xy(thetas(valid),ranges(nframe,(valid))');
-XY(1,:) = XY(1,:) + sensor_offset(1);
-XY_ref = Rot*XY + tr;
-for t=1:numel(valid)
-    plot([tr(1) XY_ref(1,t)],[tr(2) XY_ref(2,t)],'g-');
+% find local minimal as final surface points
+locc = loc(:,:);
+nxx = nx(:,:);
+finalpoints = [];
+for loop = 1 : numel(locc(:,1))
+    raypoint = locc(loop,:);
+    biaspoint = nxx(loop,:);
+    x = [raypoint(1,1)-1*biaspoint(1,1);raypoint(1,1)]; 
+    v = [raypoint(1,2)-1*biaspoint(1,2);raypoint(1,2)]; 
+
+    if((raypoint(1,1)-1*biaspoint(1,1))<raypoint(1,1))
+        xq = linspace((raypoint(1,1)-1*biaspoint(1,1)),raypoint(1,1),30);
+    else
+        xq = linspace(raypoint(1,1),(raypoint(1,1)-1*biaspoint(1,1)),30);
+    end
+    vq1 = interp1(x,v,xq);
+
+    %plot(x,v,'o',xq',vq1','.');
+    rayline = single([xq; vq1]);
+    test_rayline = mexGPisMap('test',rayline);
+    test_rayline(1,:) = -(1/w)*log(test_rayline(1,:));
+    [~,IndexMin] = min(test_rayline(1,:));
+    finalpoints = [finalpoints,rayline(:,IndexMin)];
 end
 
-% robot pose
-headpatch = patch( arr(1,:),arr(2,:),'w');
-set(headpatch, 'EdgeColor','r','LineWidth',2);
-plot(poses(initframe:skip:nframe,1),poses(initframe:skip:nframe,2),'k-','LineWidth',1);
-drawnow;
-set(gcf,'Position',gcf_position);
+% we lost the sign, so need the mask to recover it
+maskpoints = [];
+for nframe1 = 200:300:lastframe
+    
+valid = find((ranges(nframe1,:)'<3e1) & (ranges(nframe1,:)'>2e-1) & (~isinf(ranges(nframe1,:)')));
+XY = polar2xy(thetas(valid),ranges(nframe1,(valid))');
+XY(1,:) = XY(1,:) + sensor_offset(1);
+
+tr = poses(nframe1,1:2)';
+phi = poses(nframe1,3);
+Rot = [cos(phi) -sin(phi); sin(phi) cos(phi)];
+XY_ref = Rot*XY + tr;
+
+    for t=1:numel(valid)
+        aaaa = linspace(tr(1),XY_ref(1,t),70);
+        bbbb = interp1([tr(1);XY_ref(1,t)],[tr(2);XY_ref(2,t)],aaaa);
+        pppp = [aaaa;bbbb]';
+        maskpoints = [maskpoints;pppp];
+    end
+end
+plot(maskpoints(:,1), maskpoints(:,2),'y*'); hold on;
+
+Indpo = [];
+Indne = [];
+
+% generate the mask for recovering the sign
+mask1 = size(xtest,2);
+xtest1 = xtest';
+
+% for b = 1 : numel(xtest1(:,1))   
+%     [k,dist] = knnsearch(maskpoints,xtest1(b,:));
+%     
+%     if dist >=0.15
+%         Indpo = [Indpo;b];
+%     else   
+%         Indne = [Indne;b];
+%     end
+% end
+[k,dist] = knnsearch(maskpoints,xtest1);
+valid1 = find(dist >= 0.15);
+valid2 = find(dist < 0.15);
+Indpo = valid1;
+Indne = valid2;
+
+mask1(Indne) = 1;
+mask1(Indpo) = 0;
+mask1 = logical(mask1);
+mask1 = reshape(mask1,size(yg));
+
+figure;
+imshow(mask1);
+
+mask2 = single(mask1(:));
+Invert = find(mask2==0);
+mask2(Invert)=-1;
+
+% plot the results
+figure;
+see1 = reshape(fval'.*mask2,size(xg));
+h = pcolor(xg,yg,reshape(fval'.*mask2,size(xg))); hold on;
+set(h,'EdgeColor','none');
+finalpoints = finalpoints';
+plot(finalpoints(:,1), finalpoints(:,2),'r.','MarkerSize',5); hold on;
+axis equal;
+axis on;
+colorbar;
+lim = [-4 4];
+caxis(lim);  
+hold on;

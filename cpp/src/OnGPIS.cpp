@@ -58,6 +58,7 @@ void OnGPIS::train(const vecNode& samples){
             grad(0,k) = (*it)->getGradX();
             grad(1,k) = (*it)->getGradY();
             f(k) = (*it)->getVal();
+            f(k) = exp(-f(k)*10);
             sigx(k) = (*it)->getPosNoise();
             siggrad(k) = (*it)->getGradNoise();
             if (siggrad(k) > 0.1001 || (fabs(grad(0,k)) < 1e-6 && fabs(grad(1,k)) < 1e-6)){
