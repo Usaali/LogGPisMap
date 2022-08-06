@@ -38,7 +38,9 @@ teppRes = mexGPisMap('test',tepp);
 loc = tepp'; % Location
 
 % normalised the normals
-nx = -[teppRes(2,:)',teppRes(3,:)'];
+movingNorm1 = ;
+movingNorm2 = teppRes(3,:)';
+nx = -[teppRes(2,:)',movingNorm2];
 nx = nx ./ sqrt(sum(nx.^2, 2));
 
 % check the double surfaces
@@ -86,30 +88,44 @@ phi = poses(nframe1,3);
 Rot = [cos(phi) -sin(phi); sin(phi) cos(phi)];
 XY_ref = Rot*XY + tr;
 
-for t=1:numel(valid)
-    maskPx = linspace(tr(1),XY_ref(1,t),70);
-    maskPy = interp1([tr(1);XY_ref(1,t)],[tr(2);XY_ref(2,t)],maskPx);
-    maskpoints = [maskpoints;[maskPx;maskPy]'];
+    for t=1:numel(valid)
+        aaaa = linspace(tr(1),XY_ref(1,t),70);
+        bbbb = interp1([tr(1);XY_ref(1,t)],[tr(2);XY_ref(2,t)],aaaa);
+        pppp = [aaaa;bbbb]';
+        maskpoints = [maskpoints;pppp];
+    end
 end
-end
-% plot(maskpoints(:,1), maskpoints(:,2),'y*'); hold on;
+plot(maskpoints(:,1), maskpoints(:,2),'y*'); hold on;
+
+Indpo = [];
+Indne = [];
 
 % generate the mask for recovering the sign
-mask = size(xtest,2);
+mask1 = size(xtest,2);
 xtest1 = xtest';
 
 [k,dist] = knnsearch(maskpoints,xtest1);
 valid1 = find(dist >= 0.15);
 valid2 = find(dist < 0.15);
+Indpo = valid1;
+Indne = valid2;
 
-mask(valid2) = 1;
-mask(valid1) = -1;
-mask = mask';
+mask1(Indne) = 1;
+mask1(Indpo) = 0;
+mask1 = logical(mask1);
+mask1 = reshape(mask1,size(yg));
+
+figure;
+imshow(mask1);
+
+mask2 = single(mask1(:));
+Invert = find(mask2==0);
+mask2(Invert)=-1;
 
 % plot the results
 figure;
-see1 = reshape(fval'.*mask,size(xg));
-h = pcolor(xg,yg,reshape(fval'.*mask,size(xg))); hold on;
+see1 = reshape(fval'.*mask2,size(xg));
+h = pcolor(xg,yg,reshape(fval'.*mask2,size(xg))); hold on;
 set(h,'EdgeColor','none');
 finalpoints = finalpoints';
 plot(finalpoints(:,1), finalpoints(:,2),'r.','MarkerSize',5); hold on;
