@@ -1,19 +1,13 @@
-# GPisMap 
+# LogGPisMap 
 
-This repository contains source codes and demo files for our paper **Online
-Continuous Mapping using Gaussian Process Implicit Surfaces (GPIS)**, which is
-presented at [IEEE ICRA 2019](https://www.icra2019.org/).
+This repository is developped based on the open source code from [link](https://github.com/leebhoram/GPisMap)
+Please find our paper Faithful Euclidean Distance Field From Log-Gaussian Process Implicit Surfaces [here](https://arxiv.org/abs/2010.11487)
 
-The representation of the environment strongly affects how robots can move and
-interact with it. The paper presents an online approach for continuous mapping
-using Gaussian Process Implicit Surfaces (GPIS). Compared with grid-based
-methods, GPIS better utilizes sparse measurements to represent the world
-seamlessly. It provides direct access to the signed-distance function (SDF) and
-its derivatives which are invaluable for other robotic tasks and incorporates
-uncertainty in the sensor measurements. Our approach incrementally and
-efficiently updates GPIS by employing a regressor on observations and a spatial
-tree structure.
- 
+## Contributors
+
+The major contributors of this work include [Brian Lee](https://github.com/lkm1321).
+
+
 ## License
 
 Licensed under [GNU General Public License version 3](https://www.gnu.org/licenses/gpl-3.0.html).
@@ -62,23 +56,29 @@ cd mex
     * If mex complains about not finding eigen, configure the eigen path appropriately
         in both `make_GPisMap.m` and `make_GPisMap3.m`
 
-## Video  
-[![](http://img.youtube.com/vi/_EqeoLeHzXU/0.jpg)](http://www.youtube.com/watch?v=_EqeoLeHzXU "Online Continuous Mapping using GPIS")
-
-## Contributors
-
-The major contributors of this work include [Bhoram Lee](https://github.com/leebhoram),
-[Clark Zhang](https://github.com/chickensouple) and [HUANG Zonghao](https://github.com/huangzonghao).
-
 ## Misc.
 
 Code has been tested under:
 
-- Ubuntu 16.04 with Intel Core i7-4900MQ @ 2.90GHz
+- Ubuntu 18.04 with Intel Core i7 @ 2.50GHz
 
 ## Citation
  
-If you find GPisMap useful in your research, please consider citing:
+Please consider citing:
+
+```
+@article{wu2021faithful,
+  title={Faithful Euclidean distance field from log-Gaussian process implicit surfaces},
+  author={Wu, Lan and Lee, Ki Myung Brian and Liu, Liyang and Vidal-Calleja, Teresa},
+  journal={IEEE Robotics and Automation Letters},
+  volume={6},
+  number={2},
+  pages={2461--2468},
+  year={2021},
+  publisher={IEEE}
+}
+```
+
 ```
   @article{<blee-icra19>,
       Author = {Bhoram Lee, Clark Zhang, Zonghao Huang, and Daniel D. Lee},
@@ -87,6 +87,3 @@ If you find GPisMap useful in your research, please consider citing:
       Year = {2019}
    }    
 ```
-
-## Extra...
-Also, see [Bhoram's dissertation (Part II)](https://repository.upenn.edu/cgi/viewcontent.cgi?article=5108&context=edissertations) for technical details.
