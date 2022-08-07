@@ -1,12 +1,8 @@
 # LogGPisMap 
 
-This repository is developped based on the open source code from [link](https://github.com/leebhoram/GPisMap)
-Please find our paper Faithful Euclidean Distance Field From Log-Gaussian Process Implicit Surfaces [here](https://arxiv.org/abs/2010.11487)
+This repository contains source code for LogGPisMap, introduced in the paper [Faithful Euclidean distance field from Log-Gaussian Process Implicit Surfaces](https://ieeexplore.ieee.org/abstract/document/9361242) presented at RA-L and ICRA2021. 
 
-## Contributors
-
-The major contributors of this work include [Brian Lee](https://github.com/lkm1321).
-
+The source code is modified from Bhoaram Lee's [GPisMap code](https://github.com/leebhoram/GPisMap).
 
 ## License
 
@@ -22,10 +18,10 @@ Licensed under [GNU General Public License version 3](https://www.gnu.org/licens
 
 1. Clone this repository
 ```
-git clone https://github.com/leebhoram/GPisMap.git
+git clone https://github.com/lanwu076/LogGPisMap.git
 ```
 
-2. Cd to the mex directive in MATLAB
+2. Go into the mex directory in MATLAB
 ```
 cd mex
 ```
@@ -38,7 +34,6 @@ cd mex
     * Run the make scripts
     ```
     make_GPisMap
-    make_GPisMap3
     ```
 
 4. Run the demo scripts
@@ -47,43 +42,31 @@ cd mex
     ```
     run('../matlab/demo_gpisMap.m')
     ```
-    * For 3D 
-    ```
-    run('../matlab/demo_gpisMap3.m')
-    ```
 
 5. Trouble shooting
     * If mex complains about not finding eigen, configure the eigen path appropriately
-        in both `make_GPisMap.m` and `make_GPisMap3.m`
+        in `make_GPisMap.m`
 
-## Misc.
+## Video  
 
-Code has been tested under:
+A demonstration video is available [here](https://www.youtube.com/watch?v=bSGx_WNdQvo).
 
-- Ubuntu 18.04 with Intel Core i7 @ 2.50GHz
+## Contributors
+
+The major contributors of this work are [Lan Wu](https://github.com/lanwu076), [Ki Myung Brian Lee](https://github.com/lkm1321).
 
 ## Citation
  
-Please consider citing:
-
+If you find LogGPisMap useful in your research, please consider citing:
 ```
-@article{wu2021faithful,
-  title={Faithful Euclidean distance field from log-Gaussian process implicit surfaces},
+@ARTICLE{lwu21-ral,
   author={Wu, Lan and Lee, Ki Myung Brian and Liu, Liyang and Vidal-Calleja, Teresa},
-  journal={IEEE Robotics and Automation Letters},
+  journal={Rob. and Automat. Lett.}, 
+  title={Faithful Euclidean Distance Field From Log-Gaussian Process Implicit Surfaces}, 
+  year={2021},
   volume={6},
   number={2},
-  pages={2461--2468},
-  year={2021},
-  publisher={IEEE}
+  pages={2461-2468}
 }
 ```
 
-```
-  @article{<blee-icra19>,
-      Author = {Bhoram Lee, Clark Zhang, Zonghao Huang, and Daniel D. Lee},
-      Title = {Online Continuous Mapping using Gaussian Process Implicit Surfaces},
-      Journal = {IEEE ICRA},
-      Year = {2019}
-   }    
-```
