@@ -1,6 +1,8 @@
 # LogGPisMap 
 
-This repository contains source code for LogGPisMap, introduced in the paper [Faithful Euclidean distance field from Log-Gaussian Process Implicit Surfaces](https://ieeexplore.ieee.org/abstract/document/9361242) presented at RA-L and ICRA2021.
+This repository contains source code for LogGPisMap, introduced in the paper [Faithful Euclidean distance field from Log-Gaussian Process Implicit Surfaces](https://ieeexplore.ieee.org/abstract/document/9361242) presented at RA-L and ICRA2021. 
+
+The source code is modified from Bhoaram Lee's [GPisMap code](https://github.com/leebhoram/GPisMap).
 
 ## License
 
@@ -16,10 +18,10 @@ Licensed under [GNU General Public License version 3](https://www.gnu.org/licens
 
 1. Clone this repository
 ```
-git clone https://github.com/leebhoram/GPisMap.git
+git clone https://github.com/lanwu076/LogGPisMap.git
 ```
 
-2. Cd to the mex directive in MATLAB
+2. Go into the mex directory in MATLAB
 ```
 cd mex
 ```
@@ -51,11 +53,12 @@ cd mex
         in both `make_GPisMap.m` and `make_GPisMap3.m`
 
 ## Video  
-[![](http://img.youtube.com/vi/_EqeoLeHzXU/0.jpg)](http://www.youtube.com/watch?v=_EqeoLeHzXU "Online Continuous Mapping using GPIS")
+
+A demonstration video is available [here](https://www.youtube.com/watch?v=bSGx_WNdQvo).
 
 ## Contributors
 
-The major contributors of this work are [Lan Wu](https://github.com/lanwu076), [Ki Myung Brian Lee](https://github.com/lkm1321)
+The major contributors of this work are [Lan Wu](https://github.com/lanwu076), [Ki Myung Brian Lee](https://github.com/lkm1321).
 
 ## Citation
  
