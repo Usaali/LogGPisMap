@@ -49,19 +49,10 @@ cd mex
 
 ## Video  
 
-<<<<<<< HEAD
 A demonstration video is available [here](https://www.youtube.com/watch?v=bSGx_WNdQvo).
 
 ## Contributors
 
-=======
-## Video  
-
-A demonstration video is available [here](https://www.youtube.com/watch?v=bSGx_WNdQvo).
-
-## Contributors
-
->>>>>>> 5e667b6d04ce6227a78cde7debd0b3200ce30eb9
 The major contributors of this work are [Lan Wu](https://github.com/lanwu076), [Ki Myung Brian Lee](https://github.com/lkm1321).
 
 ## Citation
@@ -78,7 +69,3 @@ If you find LogGPisMap useful in your research, please consider citing:
   pages={2461-2468}
 }
 ```
-<<<<<<< HEAD
-
-=======
->>>>>>> 5e667b6d04ce6227a78cde7debd0b3200ce30eb9
