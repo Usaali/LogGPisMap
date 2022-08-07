@@ -1,12 +1,6 @@
 # LogGPisMap 
 
-This repository is developped based on the open source code from [link](https://github.com/leebhoram/GPisMap)
-Please find our paper Faithful Euclidean Distance Field From Log-Gaussian Process Implicit Surfaces [here](https://arxiv.org/abs/2010.11487)
-
-## Contributors
-
-The major contributors of this work include [Brian Lee](https://github.com/lkm1321).
-
+This repository contains source code for LogGPisMap, introduced in the paper [Faithful Euclidean distance field from Log-Gaussian Process Implicit Surfaces](https://ieeexplore.ieee.org/abstract/document/9361242) presented at RA-L and ICRA2021.
 
 ## License
 
@@ -56,34 +50,24 @@ cd mex
     * If mex complains about not finding eigen, configure the eigen path appropriately
         in both `make_GPisMap.m` and `make_GPisMap3.m`
 
-## Misc.
+## Video  
+[![](http://img.youtube.com/vi/_EqeoLeHzXU/0.jpg)](http://www.youtube.com/watch?v=_EqeoLeHzXU "Online Continuous Mapping using GPIS")
 
-Code has been tested under:
+## Contributors
 
-- Ubuntu 18.04 with Intel Core i7 @ 2.50GHz
+The major contributors of this work are [Lan Wu](https://github.com/lanwu076), [Ki Myung Brian Lee](https://github.com/lkm1321)
 
 ## Citation
  
-Please consider citing:
-
+If you find LogGPisMap useful in your research, please consider citing:
 ```
-@article{wu2021faithful,
-  title={Faithful Euclidean distance field from log-Gaussian process implicit surfaces},
+@ARTICLE{lwu21-ral,
   author={Wu, Lan and Lee, Ki Myung Brian and Liu, Liyang and Vidal-Calleja, Teresa},
-  journal={IEEE Robotics and Automation Letters},
+  journal={Rob. and Automat. Lett.}, 
+  title={Faithful Euclidean Distance Field From Log-Gaussian Process Implicit Surfaces}, 
+  year={2021},
   volume={6},
   number={2},
-  pages={2461--2468},
-  year={2021},
-  publisher={IEEE}
+  pages={2461-2468}
 }
-```
-
-```
-  @article{<blee-icra19>,
-      Author = {Bhoram Lee, Clark Zhang, Zonghao Huang, and Daniel D. Lee},
-      Title = {Online Continuous Mapping using Gaussian Process Implicit Surfaces},
-      Journal = {IEEE ICRA},
-      Year = {2019}
-   }    
 ```
