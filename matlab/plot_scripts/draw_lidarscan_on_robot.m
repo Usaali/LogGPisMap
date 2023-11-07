@@ -1,0 +1,10 @@
+function lh=draw_lidarscan_on_robot(ranges, angles, pose)    
+scan = lidarScan(ranges, angles);
+transformedScan = transformScan(scan, pose);
+lh = plot(transformedScan);
+lh.Color = 'k';
+lh.LineStyle = 'none';
+lh.LineWidth = 0.5000;
+lh.Marker = 'o';
+lh.MarkerSize = 5;
+lh.MarkerFaceColor = 'none';
