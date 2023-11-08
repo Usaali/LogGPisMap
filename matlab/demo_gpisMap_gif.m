@@ -32,6 +32,8 @@ addpath(genpath('./util'));
 addpath('./plot_scripts');
 addpath('../mex');
 
+makeGif=0;
+
 % TK: we get 
 %  poses: x, y, orientation
 %  thetas: -135 to 135 degrees (but in rad)
@@ -74,18 +76,20 @@ for nframe = initframe:skip:lastframe
     % test visualization
     if  1 %nframe == lastframe % set the condition to 1 to visualize every update
         visualize_gpisMapRobotGradients
-        if nframe == initframe
-           display('nframe==initframe');
-           gif('robotCreatingDistanceField.gif', 'DelayTime',0.4)
-        else
-           display('nframe != initframe');
-           gif
+        if makeGif
+            if nframe == initframe
+               display('nframe==initframe');
+               gif('output.gif', 'DelayTime',0.4)
+            else
+               display('nframe != initframe');
+               gif
+            end
         end
     end
 
-    % % pause if needed
-    %disp('Press a button to continue')
-    %pause
+    % pause if needed
+    disp('Press a button to continue')
+    pause
 
 end
 

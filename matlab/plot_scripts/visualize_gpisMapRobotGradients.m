@@ -51,7 +51,10 @@ toc
 loc = tepp'; % Location
 
 % normalised the normals
+% TK: gradients
+% TK: sign needs to be reversed
 nx = -[teppRes(2,:)',teppRes(3,:)'];
+% TK: normalisation to -1 to +1
 nx = nx ./ sqrt(sum(nx.^2, 2));
 
 % check the double surfaces
@@ -119,9 +122,8 @@ mask(valid1) = -1;
 mask = mask';
 
 % plot the results
-figure(99);
-subplot(2,2,1)
-see1 = reshape(fval'.*mask,size(xg));
+figure;
+%see1 = reshape(fval'.*mask,size(xg));
 h = pcolor(xg,yg,reshape(fval'.*mask,size(xg))); hold on;
 set(h,'EdgeColor','none');
 finalpoints = finalpoints';
@@ -141,22 +143,28 @@ draw_robot(poses(nframe,1:2),L,W,poses(nframe,3),rgb)
 lh=draw_lidarscan_on_robot(ranges(nframe,:), thetas, poses(nframe,1:3));
 xlim([xmin xmax])
 ylim([ymin ymax])
+title('Distance Field');
 
 %
 % TK: plot gradients
 %
-gradX = reshape(res(2,:),size(xg));
-gradY = reshape(res(3,:),size(xg));
 
-subplot(2,2,2)
-quiver(xg,yg,gradX,gradY)
-title('Gradient field')
-subplot(2,2,3)
-surf(xg,yg,gradX)
-title('Gradient X')
-subplot(2,2,4)
-surf(xg,yg,gradY)
-title('Gradient Y')
+% sign is reversed (due to log operation)
+grad = -[res(2,:)',res(3,:)'];
+% normalisation to -1 to 1
+gradNorm = grad ./ sqrt(sum(grad.^2, 2));
 
+gradNormX = reshape(gradNorm(:,1),size(xg));
+gradNormY = reshape(gradNorm(:,2),size(xg));
 
+% remove infinities
+idx = ~isinf(gradNormX) & ~isinf(gradNormY); 
 
+figure
+quiver(xg(idx),yg(idx),gradNormX(idx),gradNormY(idx),0.5);
+L=0.6; W=0.4; rgb=[0.3 0.3 0.3];
+draw_robot(poses(nframe,1:2),L,W,poses(nframe,3),rgb)
+title('Gradients');
+axis equal;
+xlim([xmin xmax])
+ylim([ymin ymax])
