@@ -121,29 +121,36 @@ mask(valid2) = 1;
 mask(valid1) = -1;
 mask = mask';
 
-% plot the results
-figure;
-%see1 = reshape(fval'.*mask,size(xg));
-h = pcolor(xg,yg,reshape(fval'.*mask,size(xg))); hold on;
-set(h,'EdgeColor','none');
-finalpoints = finalpoints';
-plot(finalpoints(:,1), finalpoints(:,2),'r.','MarkerSize',5); hold on;
-axis equal;
-axis on;
-colorbar;
-lim = [-4 4];
-caxis(lim);  
-hold on;
-
 %
-% TK: plot the robot and lidar scan
-% 
+% plot the results
+%
+
+% parameters for robot plotting
 L=0.6; W=0.4; rgb=[0.3 0.3 0.3];
-draw_robot(poses(nframe,1:2),L,W,poses(nframe,3),rgb)
-lh=draw_lidarscan_on_robot(ranges(nframe,:), thetas, poses(nframe,1:3));
-xlim([xmin xmax])
-ylim([ymin ymax])
-title('Distance Field');
+
+if plotDistanceField
+    figure(1);
+    %see1 = reshape(fval'.*mask,size(xg));
+    h = pcolor(xg,yg,reshape(fval'.*mask,size(xg))); hold on;
+    set(h,'EdgeColor','none');
+    finalpoints = finalpoints';
+    plot(finalpoints(:,1), finalpoints(:,2),'r.','MarkerSize',5); hold on;
+    axis equal;
+    axis on;
+    colorbar;
+    lim = [-4 4];
+    caxis(lim);  
+    hold on;
+
+    %
+    % TK: plot the robot and lidar scan
+    % 
+    draw_robot(poses(nframe,1:2),L,W,poses(nframe,3),rgb)
+    lh=draw_lidarscan_on_robot(ranges(nframe,:), thetas, poses(nframe,1:3));
+    xlim([xmin xmax])
+    ylim([ymin ymax])
+    title('Distance Field');
+end
 
 %
 % TK: plot gradients
@@ -151,20 +158,65 @@ title('Distance Field');
 
 % sign is reversed (due to log operation)
 grad = -[res(2,:)',res(3,:)'];
-% normalisation to -1 to 1
-gradNorm = grad ./ sqrt(sum(grad.^2, 2));
 
-gradNormX = reshape(gradNorm(:,1),size(xg));
-gradNormY = reshape(gradNorm(:,2),size(xg));
+if plotGradientsNonNormalised
+    figure(2)
+    gradX = reshape(grad(:,1),size(xg));
+    gradY = reshape(grad(:,2),size(xg));
+    % remove infinities
+    idx = ~isinf(gradX) & ~isinf(gradY); 
+    
+    quiver(xg(idx),yg(idx),gradX(idx),gradY(idx));
+    L=0.6; W=0.4; rgb=[0.3 0.3 0.3];
+    draw_robot(poses(nframe,1:2),L,W,poses(nframe,3),rgb)
+    title('Non-Normalised Gradients');
+    axis equal;
+    xlim([xmin xmax])
+    ylim([ymin ymax])
+end
 
-% remove infinities
-idx = ~isinf(gradNormX) & ~isinf(gradNormY); 
+if plotGradientsNormalised
+    % normalisation to -1 to 1
+    gradNorm = grad ./ sqrt(sum(grad.^2, 2));
+    
+    gradNormX = reshape(gradNorm(:,1),size(xg));
+    gradNormY = reshape(gradNorm(:,2),size(xg));
 
-figure
-quiver(xg(idx),yg(idx),gradNormX(idx),gradNormY(idx),0.5);
-L=0.6; W=0.4; rgb=[0.3 0.3 0.3];
-draw_robot(poses(nframe,1:2),L,W,poses(nframe,3),rgb)
-title('Gradients');
-axis equal;
-xlim([xmin xmax])
-ylim([ymin ymax])
+    % remove infinities
+    idx = ~isinf(gradNormX) & ~isinf(gradNormY); 
+
+    figure(3)
+    quiver(xg(idx),yg(idx),gradNormX(idx),gradNormY(idx));
+    L=0.6; W=0.4; rgb=[0.3 0.3 0.3];
+    draw_robot(poses(nframe,1:2),L,W,poses(nframe,3),rgb)
+    title('Normalised Gradients');
+    axis equal;
+    xlim([xmin xmax])
+    ylim([ymin ymax])
+end
+
+
+%
+% TK: plot scaled gradients
+%
+
+% absolute values of the distances
+distancesAbs = abs(reshape(fval'.*mask,size(xg)));
+
+% function mapping distance to magnitude of a repulsive action 
+vmax=1; alpha=6; rho=4; flacco=1; doPlot=0;
+mag = compute_repulsive_magnitude(distancesAbs,vmax,alpha,rho,flacco,doPlot);  
+
+% scale gradients according to distance from structure
+gradNormXScaled = gradNormX(idx).*mag(idx);
+gradNormYScaled = gradNormY(idx).*mag(idx);
+
+if plotGradientsScaled
+    figure(4)
+    quiver(xg(idx),yg(idx),gradNormXScaled,gradNormYScaled);
+    draw_robot(poses(nframe,1:2),L,W,poses(nframe,3),rgb)
+    title('Scaled Gradients')
+    axis equal;
+    xlim([xmin xmax])
+    ylim([ymin ymax])
+end

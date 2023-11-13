@@ -32,7 +32,14 @@ addpath(genpath('./util'));
 addpath('./plot_scripts');
 addpath('../mex');
 
+%
+% TK: user parameters for plotting
+%
 makeGif=0;
+plotDistanceField=0;
+plotGradientsNonNormalised=1;
+plotGradientsNormalised=1;
+plotGradientsScaled=1;
 
 % TK: we get 
 %  poses: x, y, orientation
@@ -88,8 +95,8 @@ for nframe = initframe:skip:lastframe
     end
 
     % pause if needed
-    disp('Press a button to continue')
-    pause
+    %disp('Press a button to continue')
+    %pause
 
 end
 
