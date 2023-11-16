@@ -37,8 +37,8 @@ addpath('../mex');
 %
 makeGif=0;
 plotDistanceField=0;
-plotGradientsNonNormalised=1;
-plotGradientsNormalised=1;
+plotGradientsNonNormalised=0;
+plotGradientsNormalised=0;
 plotGradientsScaled=1;
 
 % TK: we get 

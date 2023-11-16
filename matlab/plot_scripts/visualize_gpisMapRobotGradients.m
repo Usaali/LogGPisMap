@@ -175,15 +175,16 @@ if plotGradientsNonNormalised
     ylim([ymin ymax])
 end
 
-if plotGradientsNormalised
-    % normalisation to -1 to 1
-    gradNorm = grad ./ sqrt(sum(grad.^2, 2));
-    
-    gradNormX = reshape(gradNorm(:,1),size(xg));
-    gradNormY = reshape(gradNorm(:,2),size(xg));
+% normalisation to -1 to 1
+gradNorm = grad ./ sqrt(sum(grad.^2, 2));
 
-    % remove infinities
-    idx = ~isinf(gradNormX) & ~isinf(gradNormY); 
+gradNormX = reshape(gradNorm(:,1),size(xg));
+gradNormY = reshape(gradNorm(:,2),size(xg));
+
+% remove infinities
+idx = ~isinf(gradNormX) & ~isinf(gradNormY); 
+
+if plotGradientsNormalised
 
     figure(3)
     quiver(xg(idx),yg(idx),gradNormX(idx),gradNormY(idx));
@@ -194,7 +195,6 @@ if plotGradientsNormalised
     xlim([xmin xmax])
     ylim([ymin ymax])
 end
-
 
 %
 % TK: plot scaled gradients
