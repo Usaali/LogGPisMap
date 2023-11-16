@@ -1,5 +1,5 @@
 
-function[]= draw_robot(center_location,L,W,theta,rgb)
+function[p]= draw_robot(center_location,L,W,theta,rgb)
 % center_location: x an y in m
 % L,W: length and width in m
 % theta: heading in rad
@@ -29,6 +29,6 @@ y_upper_left=center2+T(2,5);
 x_coor=[x_lower_left x_lower_right x_peak x_upper_right x_upper_left];
 y_coor=[y_lower_left y_lower_right y_peak y_upper_right y_upper_left];
 
-patch('Vertices',[x_coor; y_coor]','Faces',[1 2 3 4 5],'Edgecolor','r','Facecolor',rgb,'Linewidth',1);
-axis equal;
+p = patch('Vertices',[x_coor; y_coor]','Faces',[1 2 3 4 5],'Edgecolor','r','Facecolor',rgb,'Linewidth',1);
+%axis equal;
 end

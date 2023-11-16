@@ -2,6 +2,7 @@ clear all;
 close all;
 
 load('results\data_full_run.mat');
+addpath 'plot_scripts';
 
 % Start and end goal
 startPose = [3 0.5 0];
@@ -34,8 +35,11 @@ axis equal;
 xlim([xmin xmax])
 ylim([ymin ymax])
 
-plot(startPose(1), startPose(2), 'ok', 'MarkerFaceColor', 'k', 'MarkerSize', 5);
-plot(endPosition(1), endPosition(2), 'or', 'MarkerFaceColor', 'r', 'MarkerSize', 5);
+plot(startPose(1), startPose(2), 'ok', 'MarkerFaceColor', 'k', 'MarkerSize', 7);
+plot(endPosition(1), endPosition(2), 'og', 'MarkerFaceColor', 'g', 'MarkerSize', 7);
+
+disp('Pausing...');
+pause
 
 t = 1;
 dT = 0.1;
@@ -54,6 +58,8 @@ yMeshLocations = yg(:,2);
 gradNormXScaledReshaped = reshape(gradNormXScaled, size(xg));
 gradNormYScaledReshaped = reshape(gradNormYScaled, size(xg));
 repScaleFactor = 0.15;
+L=0.3;
+W=0.2;
 
 while norm(endPosition - [x y]) > endPositionAccuracy || t > t_max
     % Calculate Attractive Potential
@@ -76,12 +82,14 @@ while norm(endPosition - [x y]) > endPositionAccuracy || t > t_max
     nablaU = nablaU_att+nablaU_rep;
     
     
-    % plot vectors
-%     if t>1
-%         delete(q1); delete(q2); delete (q3);
-%     end
+    % plot robot and vectors
+     if t>1
+         delete(p);
+         % delete(q1); delete(q2); delete (q3);
+     end
     
     hold on;
+    p = draw_robot([x y],L,W,theta,rgb);
     q1=quiver(x,y,nablaU_att(1),nablaU_att(2),0,'b');
     q2=quiver(x,y,nablaU_rep(1),nablaU_rep(2),0,'r');
     q3=quiver(x,y,nablaU(1),nablaU(2),0,'g');
